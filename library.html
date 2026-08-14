@@ -1,51 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Library — Ink & Soul</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>The Library — Ink & Soul</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body>
-  <header class="site-header">
-    <a class="brand" href="index.html"><span class="brand-mark">✒</span><span>Ink &amp; Soul</span></a>
-    <button class="menu-toggle" aria-label="Open menu">☰</button>
+
+<header class="site-header">
+
+    <a class="brand" href="index.html">
+        <span class="brand-mark">✒</span>
+        <span>Ink &amp; Soul</span>
+    </a>
+
+    <button class="menu-toggle" aria-label="Open menu">
+        ☰
+    </button>
+
     <nav class="nav">
-      <a href="index.html">Home</a>
-      <a class="active" href="library.html">Library</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
+        <a href="index.html">Home</a>
+        <a class="active" href="library.html">Library</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
     </nav>
-  </header>
 
-  <main class="page">
-    <div class="eyebrow"><span></span> THE LIBRARY <span></span></div>
+</header>
+
+
+<main class="page">
+
+    <div class="eyebrow">
+        <span></span>
+        THE LIBRARY
+        <span></span>
+    </div>
+
     <h1>Words to wander through.</h1>
-    <p class="page-intro">Explore a small collection of poems, letters, and prose. Replace these examples with your own writing.</p>
 
-    <section class="cards">
-      <article class="card">
-        <p class="type">POEM</p>
-        <h2>Between the Lines</h2>
-        <p>Sometimes the quietest words are the ones that stay with us the longest.</p>
-        <a href="#" class="read-more">Read more →</a>
-      </article>
-      <article class="card">
-        <p class="type">LETTER</p>
-        <h2>To My Future Self</h2>
-        <p>A gentle reminder to keep going, even when the road changes shape.</p>
-        <a href="#" class="read-more">Read more →</a>
-      </article>
-      <article class="card">
-        <p class="type">PROSE</p>
-        <h2>After the Rain</h2>
-        <p>The streets were still wet, but the sky had finally remembered how to breathe.</p>
-        <a href="#" class="read-more">Read more →</a>
-      </article>
-    </section>
-  </main>
+    <p class="page-intro">
+        Explore a collection of poems, letters, stories and prose.
+    </p>
 
-  <footer>© <span class="year"></span> Ink &amp; Soul</footer>
-  <script src="script.js"></script>
+
+    <div id="library">
+        <p>Loading writings...</p>
+    </div>
+
+</main>
+
+
+<footer>
+    © <span class="year"></span> Ink &amp; Soul
+</footer>
+
+
+<script>
+
+const SUPABASE_URL =
+    "https://egphlummrypugxilvygw.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_7lPUyq5uDyB71s2Ie4vS-g_PCZLaoFc";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+async function loadLibrary() {
+
+    const library =
+        document.getElementById("library");
+
+
+    const { data, error } =
+        await supabaseClient
+            .from("writings")
+            .select("id, title, type, excerpt, content")
+            .eq("published", true)
+            .order("created_at", {
+                ascending: false
+            });
+
+
+    if (error) {
+
+        library.innerHTML =
+            "<p>Sorry, the library could not be loaded.</p>";
+
+        console.error(error);
+
+        return;
+    }
+
+
+    if (!data || data.length === 0) {
+
+        library.innerHTML =
+            "<p>No writings have been published yet.</p>";
+
+        return;
+    }
+
+
+    library.innerHTML = "";
+
+
+    data.forEach(function(writing) {
+
+        const article =
+            document.createElement("article");
+
+        article.className = "writing-card";
+
+
+        const type =
+            document.createElement("div");
+
+        type.className = "eyebrow";
+
+        type.textContent =
+            writing.type;
+
+
+        const title =
+            document.createElement("h2");
+
+        title.textContent =
+            writing.title;
+
+
+        const excerpt =
+            document.createElement("p");
+
+        excerpt.textContent =
+            writing.excerpt || "";
+
+
+        const readMore =
+            document.createElement("button");
+
+        readMore.textContent =
+            "Read more →";
+
+
+        readMore.addEventListener(
+            "click",
+            function() {
+
+                showWriting(writing);
+
+            }
+        );
+
+
+        article.appendChild(type);
+
+        article.appendChild(title);
+
+        article.appendChild(excerpt);
+
+        article.appendChild(readMore);
+
+
+        library.appendChild(article);
+
+    });
+
+}
+
+
+function showWriting(writing) {
+
+    const library =
+        document.getElementById("library");
+
+
+    library.innerHTML = "";
+
+
+    const back =
+        document.createElement("button");
+
+    back.textContent =
+        "← Back to Library";
+
+
+    back.addEventListener(
+        "click",
+        loadLibrary
+    );
+
+
+    const type =
+        document.createElement("div");
+
+    type.className = "eyebrow";
+
+    type.textContent =
+        writing.type;
+
+
+    const title =
+        document.createElement("h1");
+
+    title.textContent =
+        writing.title;
+
+
+    const content =
+        document.createElement("div");
+
+    content.className = "writing-content";
+
+    content.style.whiteSpace =
+        "pre-wrap";
+
+    content.textContent =
+        writing.content;
+
+
+    library.appendChild(back);
+
+    library.appendChild(type);
+
+    library.appendChild(title);
+
+    library.appendChild(content);
+
+}
+
+
+loadLibrary();
+
+</script>
+
+
+<script src="script.js"></script>
+
 </body>
 </html>

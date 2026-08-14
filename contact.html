@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Ink & Soul</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html"><span class="brand-mark">✒</span><span>Ink &amp; Soul</span></a>
+    <button class="menu-toggle" aria-label="Open menu">☰</button>
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="library.html">Library</a>
+      <a href="about.html">About</a>
+      <a class="active" href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main class="page narrow">
+    <div class="eyebrow"><span></span> CONTACT <span></span></div>
+    <h1>Let's keep the conversation going.</h1>
+    <p class="page-intro">This simple form is ready for you to connect to an email service later.</p>
+
+    <form class="contact-form" onsubmit="handleContact(event)">
+      <label>Name<input type="text" name="name" required></label>
+      <label>Email<input type="email" name="email" required></label>
+      <label>Message<textarea name="message" rows="6" required></textarea></label>
+      <button class="button" type="submit">Send Message</button>
+      <p id="form-message" class="form-message"></p>
+    </form>
+  </main>
+
+  <footer>© <span class="year"></span> Ink &amp; Soul</footer>
+  <script src="script.js"></script>
+</body>
+</html>
